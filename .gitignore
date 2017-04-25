@@ -1,0 +1,16 @@
+*kateproject*
+*.o
+*.a
+!results/download.sh
+results/*
+benchmark/
+benchmark/*
+!pizza&chilli/download.sh
+pizza&chilli/*
+*.png
+*.html
+*.seq
+*.qry
+scripts/.RData
+scripts/.Rhistory
+*vscode*
