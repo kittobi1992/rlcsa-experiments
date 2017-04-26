@@ -100,7 +100,8 @@ vector_plot_for_types <- function(vec, colname, yaxis="", title="") {
 setwd("C:/Users/tobia/Documents/home/theuer/rlcsa-experiments/results/")
 experiment_dir="C:/Users/tobia/Documents/home/theuer/rmq-experiments/results/"
 date="2017-04-26"
-tmp <- cbind(date,"rl_vector_experiment")
+experiment_number="0"
+tmp <- cbind(date,"rl_vector_experiment",experiment_number)
 experiment <- str_c(tmp,collapse='_');
 #experiment <- paste(experiment_dir,experiment,sep="")
 

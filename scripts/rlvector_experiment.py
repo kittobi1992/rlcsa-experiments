@@ -8,7 +8,7 @@ import re, sys
 import os, glob
 import shutil
 
-rlvector_benchmark="benchmark/"
+rlvector_benchmark="benchmark/benchmark_subset/"
 build_dir = "benchmark/build/"
 
 def exe(cmd):
@@ -71,7 +71,7 @@ def experiment(dirname):
         
     htmls = glob.glob("HTML/*");
     for html in htmls:
-        shutil.move(html,dirname + "/" + os.path.basename(html))
+        shutil.move(html,dirname + "/HTML/" + os.path.basename(html))
     
     cols_rlvector = ["Vector","Benchmark","ConstructionTime","SpaceBitsPerElement",
                      "RandomAccessTimePerElement","SequentialAccessTimePerElement"]
@@ -80,11 +80,17 @@ def experiment(dirname):
     
 
 def setup_experiment_environment():
+    idx = 0;
     dirname = "results/"+str(datetime.datetime.now().date())+"_rl_vector_experiment";
-    try: os.stat(dirname);
-    except: os.mkdir(dirname);
-    delete_folder_content(dirname)
-    return dirname
+    while True:
+        try: 
+            os.stat(dirname + "_" + str(idx))
+            idx = idx + 1;
+        except: 
+            os.mkdir(dirname + "_" + str(idx))
+            break;
+    os.mkdir(dirname + "_" + str(idx) + "/HTML")
+    return dirname + "_" + str(idx)
 
 
 if __name__ == '__main__':

@@ -1,9 +1,9 @@
 #include <sdsl/suffix_arrays.hpp>
 #include <sdsl/suffix_trees.hpp>
 
-#include <sdsl/enc_vector.hpp>
-#include <sdsl/vlc_vector.hpp>
+
 #include <sdsl/dac_vector.hpp>
+#include <sdsl/bit_vectors.hpp>
 #include <sdsl/rl_enc_vector.hpp>
 
 #include <algorithm>
@@ -163,18 +163,43 @@ int main(int argc, char *argv[])
     }
 
     {
-        string algo = "rl_enc_vector";
-        PsiVectorExperiment<rl_enc_vector<enc_vector<>>> experiment(algo,psi);
+        string algo = "rl_vector_1";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,1>> experiment(algo, psi);
     }
 
     {
-        string algo = "rl_vlc_vector";
-        PsiVectorExperiment<rl_enc_vector<vlc_vector<>>> experiment(algo, psi);
+        string algo = "rl_vector_2";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,2>> experiment(algo, psi);
     }
 
     {
-        string algo = "rl_dac_vector";
-        PsiVectorExperiment<rl_enc_vector<dac_vector<>>> experiment(algo, psi);
+        string algo = "rl_vector_4";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,4>> experiment(algo, psi);
+    }
+
+    {
+        string algo = "rl_vector_8";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,8>> experiment(algo, psi);
+    }
+
+    {
+        string algo = "rl_vector_16";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,16>> experiment(algo, psi);
+    }
+
+    {
+        string algo = "rl_vector_32";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,32>> experiment(algo, psi);
+    }
+
+    {
+        string algo = "rl_vector_64";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,64>> experiment(algo, psi);
+    }
+
+    {
+        string algo = "rl_vector_128";
+        PsiVectorExperiment<rl_enc_vector<dac_vector<>,sd_vector<>,128>> experiment(algo, psi);
     }
 
     {
