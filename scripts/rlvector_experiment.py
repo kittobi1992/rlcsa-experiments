@@ -8,7 +8,7 @@ import re, sys
 import os, glob
 import shutil
 
-rlvector_benchmark="benchmark/benchmark_subset/"
+rlvector_benchmark="benchmark/benchmark/"
 build_dir = "benchmark/build/"
 
 def exe(cmd):
@@ -56,15 +56,23 @@ def experiment(dirname):
     print 'Run-Length Compressed Vector-Experiment\n============'
     rlvector_res = []
     
+    #Create HTML-Folder for Memory-Usage
+    try: os.stat("HTML/");
+    except: os.mkdir("HTML/");
+
     benchmarks = glob.glob(rlvector_benchmark+"*")
     for benchmark in benchmarks:
-        if(os.path.isdir(benchmark)):
+        if(os.path.isdir(benchmark) || os.path.basename(benchmark) == "download.sh"):
             continue
-        print("Execute benchmark " + benchmark + "...")
+        print("Execute benchmark " + os.path.basename(benchmark) + "...")
         benchmark_res = execute_rlvector_benchmark(benchmark)
         for r in benchmark_res:
             rlvector_res.append(get_rlvector_stats(r));    
         
+    htmls = glob.glob("HTML/*");
+    for html in htmls:
+        shutil.move(html,dirname + "/" + os.path.basename(html))
+    
     cols_rlvector = ["Vector","Benchmark","ConstructionTime","SpaceBitsPerElement",
                      "RandomAccessTimePerElement","SequentialAccessTimePerElement"]
     df_rlvector = pd.DataFrame(rlvector_res,columns=cols_rlvector)
