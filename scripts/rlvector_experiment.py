@@ -8,7 +8,7 @@ import re, sys
 import os, glob
 import shutil
 
-rlvector_benchmark="benchmark/benchmark/"
+rlvector_benchmark="benchmark/benchmark_subset/"
 build_dir = "benchmark/build/"
 
 def exe(cmd):
@@ -62,7 +62,7 @@ def experiment(dirname):
 
     benchmarks = glob.glob(rlvector_benchmark+"*")
     for benchmark in benchmarks:
-        if(os.path.isdir(benchmark) || os.path.basename(benchmark) == "download.sh"):
+        if os.path.isdir(benchmark) or os.path.basename(benchmark) == "download.sh":
             continue
         print("Execute benchmark " + os.path.basename(benchmark) + "...")
         benchmark_res = execute_rlvector_benchmark(benchmark)
