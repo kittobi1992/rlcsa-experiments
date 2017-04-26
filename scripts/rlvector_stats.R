@@ -22,7 +22,7 @@ theme_complete_bw <- function(base_size = 12, base_family = "") {
     axis.text.y =        element_text(size = base_size * 0.75, lineheight = 0.9, 
                                       colour = "black", hjust = 1, margin=margin(3,3,3,3,unit="mm")),
     axis.ticks =         element_line(colour = "black"),
-    axis.title.x =       element_blank(),
+    axis.title.x =       element_text(size = base_size * 1, vjust = 0.5),
     axis.title.y =       element_text(size = base_size * 1, angle = 90, vjust = 0.5),
     axis.ticks.length =  unit(0.15, "cm"),
     #axis.ticks.margin =  unit(0.1, "cm"),
@@ -96,11 +96,23 @@ vector_plot_for_types <- function(vec, colname, yaxis="", title="") {
   print(plot)
 }
 
+time_space_tradeoff_plot_benchmark <- function(vec, colname, title="Access Time-Space-Tradeoff per Benchmark") {
+  df <- subset(vec, vec$Vector != "enc_vector")
+  
+  plot <- ggplot(data=df,aes(x=RandomAccessTimePerElement,y=SpaceBitsPerElement,colour=factor(Vector))) 
+  plot <- plot + geom_point(size=3)
+  plot <- plot + facet_wrap(~ Benchmark, scales="free") 
+  plot <- plot + xlab("Random access time per element [탎]")
+  plot <- plot + ylab("Space in bits per element")
+  plot <- plot + ggtitle(title) + theme_complete_bw()
+  print(plot)
+}
+
 #==========Experiment===========#
 setwd("C:/Users/tobia/Documents/home/theuer/rlcsa-experiments/results/")
 experiment_dir="C:/Users/tobia/Documents/home/theuer/rmq-experiments/results/"
 date="2017-04-26"
-experiment_number="0"
+experiment_number="1"
 tmp <- cbind(date,"rl_vector_experiment",experiment_number)
 experiment <- str_c(tmp,collapse='_');
 #experiment <- paste(experiment_dir,experiment,sep="")
@@ -112,6 +124,9 @@ rlvec$RandomAccessTimePerElement <- as.numeric(as.character(rlvec$RandomAccessTi
 rlvec$SequentialAccessTimePerElement <- as.numeric(as.character(rlvec$SequentialAccessTimePerElement))
 rlvec <- rlvec[order(rlvec$Benchmark),]
 
+#Used for sample experiments
+rlvec$Vector <- factor(rlvec$Vector, levels = levels(rlvec$Vector)[c(1,2,5,7,9,4,6,8,3)])
+
 vector_plot_for_benchmark(rlvec,rlvec$SpaceBitsPerElement, yaxis="Space in bits per element", title="Space in bits per element for all benchmarks")
 vector_plot_for_benchmark(rlvec,rlvec$RandomAccessTimePerElement, yaxis="Random access time per element [탎]", title="Random access time per element for all benchmarks")
 vector_plot_for_benchmark(rlvec,rlvec$SequentialAccessTimePerElement, yaxis="Sequential access time per element [탎]", title="Sequential access time per element for all benchmarks")
@@ -121,3 +136,4 @@ vector_plot_for_types(rlvec,rlvec$SpaceBitsPerElement, yaxis="Space in bits per 
 vector_plot_for_types(rlvec,rlvec$RandomAccessTimePerElement, yaxis="Random access time per element [탎]", title="Random access time per element for benchmark types")
 vector_plot_for_types(rlvec,rlvec$SequentialAccessTimePerElement, yaxis="Sequential access time per element [탎]", title="Sequential access time per element for benchmark types")
 
+time_space_tradeoff_plot_benchmark(rlvec)
