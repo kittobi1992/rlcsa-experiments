@@ -67,45 +67,42 @@ benchmark_type <- function(row) {
   }
 }
 
-create_mean_data_frame_for_types <- function(vec, colname) {
-  df <- data.frame(Vector=vec$Vector,Type=vec$Type,x=colname)
-  df$x <- as.numeric(as.character(df$x))
-  df <- aggregate(df$x, by=list(Vector = df$Vector, Type = df$Type), mean, drop=TRUE)
-  return(df)
-}
+aggreg <- function(df) data.frame(ConstructionTime=mean(df$ConstructionTime),
+                                  SpaceBitsPerElement=mean(df$SpaceBitsPerElement),
+                                  RandomAccessTimePerElement=mean(df$RandomAccessTimePerElement),
+                                  SequentialAccessTimePerElement=mean(df$SequentialAccessTimePerElement))
 
-vector_plot_for_benchmark <- function(vec, colname, yaxis="", title="") {
-  
-  plot <- ggplot(data=vec,aes(x=Vector,y=colname,fill=Vector,label=round(colname,digits=2))) + geom_bar(stat="identity")
-  plot <- plot + facet_wrap(~ Benchmark, scales="free") + geom_text(vjust=-0.075, check_overlap=TRUE)
+
+vector_space_plot <- function(vec, yaxis="", title="Space in bits per element") {
+  plot <- ggplot(data=vec,aes(x=Vector,y=SpaceBitsPerElement,fill=Vector,label=round(SpaceBitsPerElement,digits=2))) + geom_bar(stat="identity")
+  plot <- plot + geom_text(vjust=-0.075, check_overlap=TRUE)
   plot <- plot + ylab(yaxis)
   #plot <- plot + xlab("Range")
   plot <- plot + ggtitle(title) + theme_complete_bw()
-  print(plot)
+  return(plot)
 }
 
-vector_plot_for_types <- function(vec, colname, yaxis="", title="") {
-  df <- create_mean_data_frame_for_types(vec, colname)
-  df <- df[order(df$Type),]
-  
-  plot <- ggplot(data=df,aes(x=Vector,y=x,fill=Vector,label=round(x,digits=2))) + geom_bar(stat="identity")
-  plot <- plot + facet_wrap(~ Type) + geom_text(vjust=-0.075, check_overlap=TRUE)
+vector_access_time_plot <- function(vec, yaxis="", title="Random access time per element [탎]") {
+  plot <- ggplot(data=vec,aes(x=Vector,y=RandomAccessTimePerElement,fill=Vector,label=round(RandomAccessTimePerElement,digits=2))) + geom_bar(stat="identity")
+  plot <- plot + geom_text(vjust=-0.075, check_overlap=TRUE)
   plot <- plot + ylab(yaxis)
   #plot <- plot + xlab("Range")
   plot <- plot + ggtitle(title) + theme_complete_bw()
-  print(plot)
+  return(plot)
 }
 
-time_space_tradeoff_plot_benchmark <- function(vec, colname, title="Access Time-Space-Tradeoff per Benchmark") {
+
+time_space_tradeoff_plot_benchmark <- function(vec, title="Access Time-Space-Tradeoff", point_size=3) {
   df <- subset(vec, vec$Vector != "enc_vector")
   
   plot <- ggplot(data=df,aes(x=RandomAccessTimePerElement,y=SpaceBitsPerElement,colour=factor(Vector))) 
-  plot <- plot + geom_point(size=3)
-  plot <- plot + facet_wrap(~ Benchmark, scales="free") 
+  plot <- plot + geom_point(size=point_size)
   plot <- plot + xlab("Random access time per element [탎]")
   plot <- plot + ylab("Space in bits per element")
   plot <- plot + ggtitle(title) + theme_complete_bw()
-  print(plot)
+  plot <- plot + theme(axis.text.x = element_text(size = 11 * 0.75, lineheight = 0.9, 
+                                                  colour = "black", hjust = 1, margin=margin(3,3,3,3,unit="mm")))
+  return(plot)
 }
 
 #==========Experiment===========#
@@ -119,21 +116,32 @@ experiment <- str_c(tmp,collapse='_');
 
 rlvec <- read.csv2(paste(experiment,"/rlvector_result.csv",sep=""),sep=",",header=TRUE)
 rlvec$Type = as.factor(apply(rlvec,1,function(x) benchmark_type(x)))
+rlvec$ConstructionTime <- as.numeric(as.character(rlvec$ConstructionTime))
 rlvec$SpaceBitsPerElement <- as.numeric(as.character(rlvec$SpaceBitsPerElement))
 rlvec$RandomAccessTimePerElement <- as.numeric(as.character(rlvec$RandomAccessTimePerElement))
 rlvec$SequentialAccessTimePerElement <- as.numeric(as.character(rlvec$SequentialAccessTimePerElement))
-rlvec <- rlvec[order(rlvec$Benchmark),]
 
 #Used for sample experiments
 rlvec$Vector <- factor(rlvec$Vector, levels = levels(rlvec$Vector)[c(1,2,5,7,9,4,6,8,3)])
 
-vector_plot_for_benchmark(rlvec,rlvec$SpaceBitsPerElement, yaxis="Space in bits per element", title="Space in bits per element for all benchmarks")
-vector_plot_for_benchmark(rlvec,rlvec$RandomAccessTimePerElement, yaxis="Random access time per element [탎]", title="Random access time per element for all benchmarks")
-vector_plot_for_benchmark(rlvec,rlvec$SequentialAccessTimePerElement, yaxis="Sequential access time per element [탎]", title="Sequential access time per element for all benchmarks")
+#Plots summarizing stats for all benchmarks
+plot(vector_space_plot(rlvec) + facet_wrap(~ Benchmark, scales="free"))
+plot(vector_access_time_plot(rlvec) + facet_wrap(~ Benchmark, scales="free"))
+plot(time_space_tradeoff_plot_benchmark(rlvec,title="Access Time-Space-Tradeoff per benchmark") + 
+       facet_wrap(~ Benchmark, scales="free"))
 
+#Plots summarizing stats for all benchmark types
+rlvec_type <-  ddply(rlvec, c("Vector","Type"), aggreg)
+plot(vector_space_plot(rlvec_type) + facet_wrap(~ Type))
+plot(vector_access_time_plot(rlvec_type) + facet_wrap(~ Type))
+plot(time_space_tradeoff_plot_benchmark(rlvec_type,
+                                        title="Access Time-Space-Tradeoff per benchmark type",
+                                        point_size=5) + facet_wrap(~ Type))
 
-vector_plot_for_types(rlvec,rlvec$SpaceBitsPerElement, yaxis="Space in bits per element", title="Space in bits per element for benchmark types")
-vector_plot_for_types(rlvec,rlvec$RandomAccessTimePerElement, yaxis="Random access time per element [탎]", title="Random access time per element for benchmark types")
-vector_plot_for_types(rlvec,rlvec$SequentialAccessTimePerElement, yaxis="Sequential access time per element [탎]", title="Sequential access time per element for benchmark types")
+#Plots summarizing stats for all benchmark
+rlvec_all <- ddply(rlvec, c("Vector"), aggreg)
+plot(vector_space_plot(rlvec_all))
+plot(vector_access_time_plot(rlvec_all))
+plot(time_space_tradeoff_plot_benchmark(rlvec_all,
+                                        title="Access Time-Space-Tradeoff for all benchmarks", point_size=8))
 
-time_space_tradeoff_plot_benchmark(rlvec)
