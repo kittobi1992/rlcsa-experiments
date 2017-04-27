@@ -1,3 +1,6 @@
 [submodule "sdsl-lite"]
 	path = sdsl-lite
 	url = https://github.com/kittobi1992/sdsl-lite.git
+[submodule "rlcsa"]
+	path = rlcsa
+	url = https://github.com/adamnovak/rlcsa.git

@@ -1,7 +1,5 @@
 #include <sdsl/suffix_arrays.hpp>
 #include <sdsl/suffix_trees.hpp>
-
-
 #include <sdsl/dac_vector.hpp>
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/rl_enc_vector.hpp>
@@ -15,10 +13,12 @@
 #include <stack>
 
 #include "sdsl_psi_vector.hpp"
+#include "rlcsa_psi_vector.hpp"
+
 
 #define x first
 #define y second 
-#define MILLI 1000
+#define MILLI 1000 
 #define MICRO 1000000
 
 using namespace std;
@@ -57,6 +57,7 @@ double microseconds()
     std::chrono::duration<double> elapsed_seconds = e - s;
     return elapsed_seconds.count() * MICRO;
 }
+
 
 void construct_phi(cache_config &test_config, string &test_file)
 {
@@ -165,43 +166,13 @@ int main(int argc, char *argv[])
     }
 
     {
-        string algo = "rl_vector_1";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 1>>> experiment(algo, psi);
+        string algo = "rlcsa_vector";
+        PsiVectorExperiment<rlcsa_psi_vector<enc_vector<>>> experiment(algo, psi);
     }
 
     {
-        string algo = "rl_vector_2";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 2>>> experiment(algo, psi);
-    }
-
-    {
-        string algo = "rl_vector_4";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 4>>> experiment(algo, psi);
-    }
-
-    {
-        string algo = "rl_vector_8";
+        string algo = "rl_vector";
         PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 8>>> experiment(algo, psi);
-    }
-
-    {
-        string algo = "rl_vector_16";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 16>>> experiment(algo, psi);
-    }
-
-    {
-        string algo = "rl_vector_32";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 32>>> experiment(algo, psi);
-    }
-
-    {
-        string algo = "rl_vector_64";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 64>>> experiment(algo, psi);
-    }
-
-    {
-        string algo = "rl_vector_128";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 128>>> experiment(algo, psi);
     }
 
     {

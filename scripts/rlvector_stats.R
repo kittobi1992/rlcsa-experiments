@@ -108,8 +108,8 @@ time_space_tradeoff_plot_benchmark <- function(vec, title="Access Time-Space-Tra
 #==========Experiment===========#
 setwd("C:/Users/tobia/Documents/home/theuer/rlcsa-experiments/results/")
 experiment_dir="C:/Users/tobia/Documents/home/theuer/rmq-experiments/results/"
-date="2017-04-26"
-experiment_number="1"
+date="2017-04-27"
+experiment_number="2"
 tmp <- cbind(date,"rl_vector_experiment",experiment_number)
 experiment <- str_c(tmp,collapse='_');
 #experiment <- paste(experiment_dir,experiment,sep="")
