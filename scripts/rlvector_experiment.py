@@ -55,6 +55,8 @@ def seperator(N):
 def experiment(dirname):
     print 'Run-Length Compressed Vector-Experiment\n============'
     rlvector_res = []
+    cols_rlvector = ["Vector","Benchmark","ConstructionTime","SpaceBitsPerElement",
+                    "RandomAccessTimePerElement","SequentialAccessTimePerElement"]
     
     #Create HTML-Folder for Memory-Usage
     try: os.stat("HTML/");
@@ -66,13 +68,17 @@ def experiment(dirname):
             continue
         print("Execute benchmark " + os.path.basename(benchmark) + "...")
         benchmark_res = execute_rlvector_benchmark(benchmark)
+        benchmark_rlvector_res = []
         for r in benchmark_res:
             rlvector_res.append(get_rlvector_stats(r));    
+            benchmark_rlvector_res.append(get_rlvector_stats(r));
+        df_benchmark_rlvector = pd.DataFrame(benchmark_rlvector_res,columns=cols_rlvector)
+        print(df_benchmark_rlvector)
         
     htmls = glob.glob("HTML/*");
     for html in htmls:
         shutil.move(html,dirname + "/HTML/" + os.path.basename(html))
-    
+
     cols_rlvector = ["Vector","Benchmark","ConstructionTime","SpaceBitsPerElement",
                      "RandomAccessTimePerElement","SequentialAccessTimePerElement"]
     df_rlvector = pd.DataFrame(rlvector_res,columns=cols_rlvector)

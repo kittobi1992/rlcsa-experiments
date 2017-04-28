@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
 
     {
         string algo = "rl_inc_vector";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<sd_vector<>, 8>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 8>>> experiment(algo, psi);
     }
 
     {
