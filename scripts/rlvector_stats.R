@@ -73,7 +73,7 @@ aggreg <- function(df) data.frame(ConstructionTime=mean(df$ConstructionTime),
                                   SequentialAccessTimePerElement=mean(df$SequentialAccessTimePerElement))
 
 
-vector_space_plot <- function(vec, yaxis="", title="Space in bits per element") {
+vector_space_plot <- function(vec, yaxis="Space in bits per element", title="Space in bits per element") {
   plot <- ggplot(data=vec,aes(x=Vector,y=SpaceBitsPerElement,fill=Vector,label=round(SpaceBitsPerElement,digits=2))) + geom_bar(stat="identity")
   plot <- plot + geom_text(vjust=-0.075, check_overlap=TRUE)
   plot <- plot + ylab(yaxis)
@@ -82,7 +82,7 @@ vector_space_plot <- function(vec, yaxis="", title="Space in bits per element") 
   return(plot)
 }
 
-vector_access_time_plot <- function(vec, yaxis="", title="Random access time per element [µs]") {
+vector_access_time_plot <- function(vec, yaxis="Random access time per element [µs]", title="Random access time per element [µs]") {
   plot <- ggplot(data=vec,aes(x=Vector,y=RandomAccessTimePerElement,fill=Vector,label=round(RandomAccessTimePerElement,digits=2))) + geom_bar(stat="identity")
   plot <- plot + geom_text(vjust=-0.075, check_overlap=TRUE)
   plot <- plot + ylab(yaxis)
@@ -109,7 +109,7 @@ time_space_tradeoff_plot_benchmark <- function(vec, title="Access Time-Space-Tra
 setwd("C:/Users/tobia/Documents/home/theuer/rlcsa-experiments/results/")
 experiment_dir="C:/Users/tobia/Documents/home/theuer/rmq-experiments/results/"
 date="2017-04-28"
-experiment_number="1"
+experiment_number="4"
 tmp <- cbind(date,"rl_vector_experiment",experiment_number)
 experiment <- str_c(tmp,collapse='_');
 #experiment <- paste(experiment_dir,experiment,sep="")

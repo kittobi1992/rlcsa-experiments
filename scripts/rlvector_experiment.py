@@ -8,8 +8,9 @@ import re, sys
 import os, glob
 import shutil
 
-rlvector_benchmark="benchmark/"
+rlvector_benchmark="benchmark/benchmark_subset/"
 build_dir = "benchmark/build/"
+program = "./executer/rlvector_experiment"
 
 def exe(cmd):
     try:
@@ -23,7 +24,7 @@ def grep(s,pattern):
     return '\n'.join(re.findall(r'^.*%s.*?$'%pattern,s,flags=re.M))
 
 def execute_rlvector_benchmark(benchmark):
-    cmd = ['./executer/rlvector_experiment',benchmark,build_dir]
+    cmd = [program,benchmark,build_dir]
     res = exe(cmd)
     return grep(res,'RESULT').split('\n')
 
@@ -100,6 +101,12 @@ def setup_experiment_environment():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--program", type=str);
+    args = parser.parse_args()
+    
+    if args.program != None:
+        program = args.program
 
     dirname = setup_experiment_environment()
     experiment(dirname)
