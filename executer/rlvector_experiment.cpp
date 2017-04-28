@@ -3,6 +3,7 @@
 #include <sdsl/dac_vector.hpp>
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/rl_enc_vector.hpp>
+#include <sdsl/rl_inc_vector.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -33,7 +34,7 @@ HighResClockTimepoint s, e;
 
 string test_file, temp_dir, test_id;
 
-const bool test = true;
+const bool test = false;
 size_t max_iteration_index = 10000;
 
 inline HighResClockTimepoint time()
@@ -173,6 +174,11 @@ int main(int argc, char *argv[])
     {
         string algo = "rl_vector";
         PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 8>>> experiment(algo, psi);
+    }
+
+    {
+        string algo = "rl_inc_vector";
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<sd_vector<>, 8>>> experiment(algo, psi);
     }
 
     {
