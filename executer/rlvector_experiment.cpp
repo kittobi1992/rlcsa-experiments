@@ -10,6 +10,7 @@
 #include <iostream>
 #include <chrono>
 #include <climits>
+#include <random>
 #include <stack>
 
 #include "sdsl_psi_vector.hpp"
@@ -32,7 +33,7 @@ HighResClockTimepoint s, e;
 
 string test_file, temp_dir, test_id;
 
-const bool test = false;
+const bool test = true;
 size_t max_iteration_index = 10000;
 
 inline HighResClockTimepoint time()
@@ -114,20 +115,19 @@ public:
 
       write_structure<HTML_FORMAT>(compressed_vec, "HTML/" + vector_type + "_" + test_id + ".html");
 
-      std::vector<size_t> idx(psi.size(),0);
-      iota(idx.begin(),idx.end(),0);
-      random_shuffle(idx.begin(),idx.end());
+      std::mt19937_64 rng;
+      std::uniform_int_distribution<uint64_t> distribution(0, psi.size());
+      auto dice = bind(distribution, rng);
 
       s = time();
       for (int i = 0; i < max_iteration_index; ++i)
       {
-          size_t j = idx[i];
+          size_t j = dice();
           volatile uint64_t psi_val = compressed_vec[j];
           testPsiValue(j,psi_val,psi);
       }
       e = time();
       double random_access_time_per_element = microseconds() / max_iteration_index;
-
       s = time();
       for (int i = 0; i < max_iteration_index; ++i)
       {
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 
     {
         string algo = "rlcsa_vector";
-        PsiVectorExperiment<rlcsa_psi_vector<enc_vector<>>> experiment(algo, psi);
+        PsiVectorExperiment<rlcsa_psi_vector> experiment(algo, psi);
     }
 
     {

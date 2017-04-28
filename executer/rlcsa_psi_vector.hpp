@@ -48,7 +48,6 @@ namespace sdsl
  *  This class is a parameter of csa_sada.
  * @ingroup int_vector
  */
-template <class t_vector = enc_vector<>>
 class rlcsa_psi_vector
 {
   private:
@@ -153,9 +152,8 @@ class rlcsa_psi_vector
     void load(std::istream &in);
 };
 
-template <class t_vector>
-inline typename rlcsa_psi_vector<t_vector>::value_type
-    rlcsa_psi_vector<t_vector>::operator[](const size_type i) const
+inline typename rlcsa_psi_vector::value_type
+    rlcsa_psi_vector::operator[](const size_type i) const
 {
     size_type alphabet = m_alphabet_rank(i + 1) - 1;
     size_type alphabet_start_pos = m_alphabet_select(alphabet + 1);
@@ -172,17 +170,15 @@ inline typename rlcsa_psi_vector<t_coder, t_dens,t_width>::value_type rlcsa_psi_
     return m_sample_vals_and_pointer[i<<1];
 }*/
 
-template <class t_vector>
-void rlcsa_psi_vector<t_vector>::swap(rlcsa_psi_vector<t_vector> &v)
+void rlcsa_psi_vector::swap(rlcsa_psi_vector &v)
 {
     if (this != &v)
     {
     }
 }
 
-template <class t_vector>
 template <class Container>
-rlcsa_psi_vector<t_vector>::rlcsa_psi_vector(const Container &c)
+rlcsa_psi_vector::rlcsa_psi_vector(const Container &c)
 {
 
     // clear bit_vectors
@@ -231,9 +227,8 @@ rlcsa_psi_vector<t_vector>::rlcsa_psi_vector(const Container &c)
     }
 }
 
-template <class t_vector>
 template <uint8_t int_width>
-rlcsa_psi_vector<t_vector>::rlcsa_psi_vector(int_vector_buffer<int_width> &v_buf)
+rlcsa_psi_vector::rlcsa_psi_vector(int_vector_buffer<int_width> &v_buf)
 {
     // clear bit_vectors
     clear();
@@ -279,8 +274,7 @@ rlcsa_psi_vector<t_vector>::rlcsa_psi_vector(int_vector_buffer<int_width> &v_buf
     }
 }
 
-template <class t_vector> 
-rlcsa_psi_vector<>::size_type rlcsa_psi_vector<t_vector>::serialize(std::ostream &out, structure_tree_node *v, std::string name) const
+rlcsa_psi_vector::size_type rlcsa_psi_vector::serialize(std::ostream &out, structure_tree_node *v, std::string name) const
 {
     structure_tree_node *child = structure_tree::add_child(v, name, util::class_name(*this));
     size_type written_bytes = 0;
@@ -292,15 +286,14 @@ rlcsa_psi_vector<>::size_type rlcsa_psi_vector<t_vector>::serialize(std::ostream
         size_type bytes = m_c[i]->reportSize();
         written_bytes += bytes;
         bit_vector rlcsa(bytes*8,0);
-        write_member(rlcsa, out, child, psi_desc);
+        rlcsa.serialize(out, child, psi_desc);
     }
     written_bytes += m_alphabet_marker.serialize(out, child, "alphabet marker");
     structure_tree::add_size(child, written_bytes);
     return written_bytes;
 }
 
-template <class t_vector>
-void rlcsa_psi_vector<t_vector>::load(std::istream &in)
+void rlcsa_psi_vector::load(std::istream &in)
 {
     read_member(m_size, in);
     read_member(m_alphabet_size, in);
