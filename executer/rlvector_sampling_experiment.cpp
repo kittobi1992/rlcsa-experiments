@@ -168,47 +168,47 @@ int main(int argc, char *argv[])
 
     {
         string algo = "rl_inc_vector_1";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 1>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 1>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_2";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 2>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 2>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_4";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 4>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 4>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_8";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 8>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 8>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_16";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 16>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 16>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_32";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 32>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 32>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_64";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 64>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 64>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_128";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 128>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 128>>> experiment(algo, psi);
     }
 
     {
         string algo = "rl_inc_vector_256";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 256>>> experiment(algo, psi);
+        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 256>>> experiment(algo, psi);
     }
 
 }
