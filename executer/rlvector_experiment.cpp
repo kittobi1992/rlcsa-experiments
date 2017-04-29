@@ -166,6 +166,7 @@ int main(int argc, char *argv[])
         load_from_file(psi, psi_file);
     }
 
+
     {
         string algo = "rlcsa_vector";
         PsiVectorExperiment<rlcsa_psi_vector> experiment(algo, psi);
@@ -175,6 +176,7 @@ int main(int argc, char *argv[])
         string algo = "rl_vector";
         PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 8>>> experiment(algo, psi);
     }
+
 
     {
         string algo = "rl_inc_dac_vector";

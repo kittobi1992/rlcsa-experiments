@@ -8,7 +8,7 @@ import re, sys
 import os, glob
 import shutil
 
-rlvector_benchmark="benchmark/benchmark_subset/"
+rlvector_benchmark="benchmark/"
 build_dir = "benchmark/build/"
 program = "./executer/rlvector_experiment"
 

@@ -14,7 +14,7 @@ experiments: executer/rlvector_experiment executer/rlvector_sampling_experiment
 executer/rlvector_experiment: executer/rlvector_experiment.cpp executer/rlcsa_psi_vector.hpp executer/sdsl_psi_vector.hpp sdsl-lite/build/lib/libsdsl.a
 							  $(CC) $(CFLAGS) $(SDSL_PREFIX) $(RLCSA_INCLUDE) executer/rlvector_experiment.cpp $(SDSL_LIB) $(RLCSA_LIB) -o executer/rlvector_experiment  
 
-executer/rlvector_sampling_experiment: executer/rlvector_sampling_experiment.cpp executer/rlcsa_psi_vector.hpp executer/sdsl_psi_vector.hpp
+executer/rlvector_sampling_experiment: executer/rlvector_sampling_experiment.cpp executer/rlcsa_psi_vector.hpp executer/sdsl_psi_vector.hpp sdsl-lite/build/lib/libsdsl.a
 							  		   $(CC) $(CFLAGS) $(SDSL_PREFIX) $(RLCSA_INCLUDE) executer/rlvector_sampling_experiment.cpp $(SDSL_LIB) $(RLCSA_LIB) -o executer/rlvector_sampling_experiment  
 
 
