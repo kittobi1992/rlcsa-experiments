@@ -280,14 +280,13 @@ rlcsa_psi_vector::size_type rlcsa_psi_vector::serialize(std::ostream &out, struc
     size_type written_bytes = 0;
     written_bytes += write_member(m_size, out, child, "size");
     written_bytes += write_member(m_alphabet_size, out, child, "size");
+    size_type psi_vector_size = 0;
     for (size_type i = 0; i < m_alphabet_size; ++i)
     {
-        std::string psi_desc = "psi_" + std::to_string(i);
-        size_type bytes = m_c[i]->reportSize();
-        written_bytes += bytes;
-        bit_vector rlcsa(bytes*8,0);
-        rlcsa.serialize(out, child, psi_desc);
+        psi_vector_size += m_c[i]->reportSize();
     }
+    bit_vector rlcsa(psi_vector_size*8,0);
+    written_bytes += rlcsa.serialize(out,child,"psi");
     written_bytes += m_alphabet_marker.serialize(out, child, "alphabet marker");
     structure_tree::add_size(child, written_bytes);
     return written_bytes;

@@ -261,11 +261,8 @@ sdsl_psi_vector<>::size_type sdsl_psi_vector<t_vector>::serialize(std::ostream &
     size_type written_bytes = 0;
     written_bytes += write_member(m_size, out, child, "size");
     written_bytes += write_member(m_alphabet_size, out, child, "size");
-    for (size_type i = 0; i < m_alphabet_size; ++i) {
-        std::string psi_desc = "psi_" + std::to_string(i);
-        written_bytes += m_c[i].serialize(out, child, psi_desc);
-    }
-    written_bytes += m_alphabet_marker.serialize(out,child,"alphabet marker");
+    written_bytes += serialize_vector(m_c,out,child,"psi");
+    written_bytes += m_alphabet_marker.serialize(out, child, "alphabet marker");
     structure_tree::add_size(child, written_bytes);
     return written_bytes;
 }
@@ -276,10 +273,7 @@ void sdsl_psi_vector<t_vector>::load(std::istream &in)
     read_member(m_size, in);
     read_member(m_alphabet_size,in);
     m_c.resize(m_alphabet_size);
-    for (size_type i = 0; i < m_alphabet_size; ++i)
-    {
-        m_c[i].load(in);
-    }
+    load_vector(m_c, in);
     m_alphabet_marker.load(in);
     m_alphabet_rank = rank_support(&m_alphabet_marker);
     m_alphabet_select = select_support(&m_alphabet_marker);

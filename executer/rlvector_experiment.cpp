@@ -4,6 +4,8 @@
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/rl_enc_vector.hpp>
 #include <sdsl/rl_inc_vector.hpp>
+#include <sdsl/wt_rlmn.hpp>
+#include <sdsl/csa_alphabet_strategy.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -92,6 +94,26 @@ void construct_phi(cache_config &test_config, string &test_file)
     }
 }
 
+void construct_bwt(cache_config &test_config, string &test_file)
+{
+
+    {
+        cout << "Load text..." << endl;
+        int_vector<8> text;
+        load_vector_from_file(text, test_file, 1);
+        append_zero_symbol(text);
+        store_to_cache(text, conf::KEY_TEXT, test_config);
+
+        cout << "Construct Suffix Array..." << endl;
+        int_vector<> sa(text.size(), 0, bits::hi(text.size()) + 1);
+        algorithm::calculate_sa((const unsigned char *)text.data(), text.size(), sa);
+        store_to_cache(sa, conf::KEY_SA, test_config);
+
+        cout << "Construct BWT..." << endl;
+        construct_bwt<8>(test_config);
+    }
+}
+
 inline void testPsiValue(size_t idx, uint64_t enc_val, int_vector<>& psi) {
     if(test) {
         if(enc_val != psi[idx]) {
@@ -104,49 +126,98 @@ inline void testPsiValue(size_t idx, uint64_t enc_val, int_vector<>& psi) {
 
 template<class t_vector>
 class PsiVectorExperiment {
+  public:
+    PsiVectorExperiment(string &vector_type, int_vector<> &psi)
+    {
+        s = time();
+        t_vector compressed_vec(psi);
+        e = time();
+        double construction_time = seconds();
+        double space_bits_per_element = 8.0 * (static_cast<double>(size_in_bytes(compressed_vec)) / static_cast<double>(psi.size()));
 
-public:
-  PsiVectorExperiment(string &vector_type, int_vector<> &psi)
-  {
-      s = time();
-      t_vector compressed_vec(psi);
-      e = time();
-      double construction_time = seconds();
-      double space_bits_per_element = 8.0 * (static_cast<double>(size_in_bytes(compressed_vec)) / static_cast<double>(psi.size()));
+        write_structure<HTML_FORMAT>(compressed_vec, "HTML/" + vector_type + "_" + test_id + ".html");
 
-      write_structure<HTML_FORMAT>(compressed_vec, "HTML/" + vector_type + "_" + test_id + ".html");
+        std::mt19937_64 rng;
+        std::uniform_int_distribution<uint64_t> distribution(0, psi.size());
+        auto dice = bind(distribution, rng);
 
-      std::mt19937_64 rng;
-      std::uniform_int_distribution<uint64_t> distribution(0, psi.size());
-      auto dice = bind(distribution, rng);
+        s = time();
+        for (int i = 0; i < max_iteration_index; ++i)
+        {
+            size_t j = dice();
+            volatile uint64_t psi_val = compressed_vec[j];
+            testPsiValue(j, psi_val, psi);
+        }
+        e = time();
+        double random_access_time_per_element = microseconds() / max_iteration_index;
+        s = time();
+        for (int i = 0; i < max_iteration_index; ++i)
+        {
+            volatile uint64_t psi_val = compressed_vec[i];
+            testPsiValue(i, psi_val, psi);
+        }
+        e = time();
+        double sequential_acces_time_per_element = microseconds() / max_iteration_index;
 
-      s = time();
-      for (int i = 0; i < max_iteration_index; ++i)
-      {
-          size_t j = dice();
-          volatile uint64_t psi_val = compressed_vec[j];
-          testPsiValue(j,psi_val,psi);
-      }
-      e = time();
-      double random_access_time_per_element = microseconds() / max_iteration_index;
-      s = time();
-      for (int i = 0; i < max_iteration_index; ++i)
-      {
-          volatile uint64_t psi_val = compressed_vec[i];
-          testPsiValue(i, psi_val, psi);
-      }
-      e = time();
-      double sequential_acces_time_per_element = microseconds() / max_iteration_index;
-
-      cout << "RESULT"
-           << " Vector=" << vector_type
-           << " Benchmark=" << test_id
-           << " ConstructionTime=" << construction_time
-           << " SpaceBitsPerElement=" << space_bits_per_element
-           << " RandomAccessTimePerElement=" << random_access_time_per_element
-           << " SequentialAccessTimePerElement=" << sequential_acces_time_per_element
-           << endl;
+        cout << "RESULT"
+             << " Vector=" << vector_type
+             << " Benchmark=" << test_id
+             << " ConstructionTime=" << construction_time
+             << " SpaceBitsPerElement=" << space_bits_per_element
+             << " RandomAccessTimePerElement=" << random_access_time_per_element
+             << " SequentialAccessTimePerElement=" << sequential_acces_time_per_element
+             << endl;
   }
+};
+
+template <class t_wt>
+class BWTExperiment
+{
+
+typedef typename wt_alphabet_trait<t_wt>::type alphabet_type;
+
+  public:
+    BWTExperiment(string &vector_type, cache_config &config)
+    {
+        s = time();
+        int_vector_buffer<alphabet_type::int_width> bwt_buf(cache_file_name(key_trait<alphabet_type::int_width>::KEY_BWT, config));
+        size_t n = bwt_buf.size();
+        t_wt wt(bwt_buf,n);
+        e = time();
+        double construction_time = seconds();
+        double space_bits_per_element = 8.0 * (static_cast<double>(size_in_bytes(wt)) / static_cast<double>(n));
+
+        write_structure<HTML_FORMAT>(wt, "HTML/" + vector_type + "_" + test_id + ".html");
+
+        std::mt19937_64 rng;
+        std::uniform_int_distribution<uint64_t> distribution(0, bwt_buf.size());
+        auto dice = bind(distribution, rng);
+
+        s = time();
+        for (int i = 0; i < max_iteration_index; ++i)
+        {
+            size_t j = dice();
+            volatile uint64_t bwt_val = wt[j];
+        }
+        e = time();
+        double random_access_time_per_element = microseconds() / max_iteration_index;
+        s = time();
+        for (int i = 0; i < max_iteration_index; ++i)
+        {
+            volatile uint64_t bwt_val = wt[i];
+        }
+        e = time();
+        double sequential_acces_time_per_element = microseconds() / max_iteration_index;
+
+        cout << "RESULT"
+             << " Vector=" << vector_type
+             << " Benchmark=" << test_id
+             << " ConstructionTime=" << construction_time
+             << " SpaceBitsPerElement=" << space_bits_per_element
+             << " RandomAccessTimePerElement=" << random_access_time_per_element
+             << " SequentialAccessTimePerElement=" << sequential_acces_time_per_element
+             << endl;
+    }
 };
 
 int main(int argc, char *argv[])
@@ -166,6 +237,11 @@ int main(int argc, char *argv[])
         load_from_file(psi, psi_file);
     }
 
+    if (!cache_file_exists(conf::KEY_BWT, test_config))
+    {
+        construct_bwt(test_config, test_file);
+    }
+
 
     {
         string algo = "rlcsa_vector";
@@ -173,19 +249,13 @@ int main(int argc, char *argv[])
     }
 
     {
-        string algo = "rl_vector";
-        PsiVectorExperiment < sdsl_psi_vector<rl_enc_vector<dac_vector<>, sd_vector<>, 8>>> experiment(algo, psi);
-    }
-
-
-    {
-        string algo = "rl_inc_dac_vector";
-        PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector<>, sd_vector<>, 8>>> experiment(algo, psi);
-    }
-
-    {
-        string algo = "rl_inc_dac_dp_vector";
+        string algo = "rl_inc_vector";
         PsiVectorExperiment<sdsl_psi_vector<rl_inc_vector<dac_vector_dp<>, sd_vector<>, 8>>> experiment(algo, psi);
+    }
+
+    {
+        string algo = "wt_rlmn_bwt_vector";
+        BWTExperiment<wt_rlmn<>> experiment(algo, test_config);
     }
 
     {

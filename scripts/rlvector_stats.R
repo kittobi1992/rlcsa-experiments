@@ -122,7 +122,7 @@ rlvec$RandomAccessTimePerElement <- as.numeric(as.character(rlvec$RandomAccessTi
 rlvec$SequentialAccessTimePerElement <- as.numeric(as.character(rlvec$SequentialAccessTimePerElement))
 
 #Used for sample experiments
-#rlvec$Vector <- factor(rlvec$Vector, levels = levels(rlvec$Vector)[c(1,4,7,9,3,6,8,2,5)])
+rlvec$Vector <- factor(rlvec$Vector, levels = levels(rlvec$Vector)[c(1,4,7,9,3,6,8,2,5)])
 
 #Plots summarizing stats for all benchmarks
 plot(vector_space_plot(rlvec) + facet_wrap(~ Benchmark, scales="free"))
