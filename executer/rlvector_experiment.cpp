@@ -2,9 +2,11 @@
 #include <sdsl/suffix_trees.hpp>
 #include <sdsl/dac_vector.hpp>
 #include <sdsl/bit_vectors.hpp>
+#include <sdsl/hyb_sd_vector.hpp>
 #include <sdsl/rl_enc_vector.hpp>
 #include <sdsl/rl_inc_vector.hpp>
 #include <sdsl/wt_rlmn.hpp>
+#include <sdsl/wt_huff.hpp>
 #include <sdsl/csa_alphabet_strategy.hpp>
 
 #include <algorithm>
@@ -135,6 +137,7 @@ class PsiVectorExperiment {
         double construction_time = seconds();
         double space_bits_per_element = 8.0 * (static_cast<double>(size_in_bytes(compressed_vec)) / static_cast<double>(psi.size()));
 
+        //std::cout << space_bits_per_element << std::endl;
         write_structure<HTML_FORMAT>(compressed_vec, "HTML/" + vector_type + "_" + test_id + ".html");
 
         std::mt19937_64 rng;
@@ -257,6 +260,12 @@ int main(int argc, char *argv[])
         string algo = "wt_rlmn_bwt_vector";
         BWTExperiment<wt_rlmn<>> experiment(algo, test_config);
     }
+
+    {
+        string algo = "wt_rl_huff_bwt_vector";
+        BWTExperiment<wt_huff<rl_bit_vector<>>> experiment(algo, test_config);
+    }
+
 
     {
         string algo = "enc_vector";
