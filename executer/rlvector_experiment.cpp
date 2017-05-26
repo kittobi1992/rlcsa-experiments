@@ -5,9 +5,12 @@
 #include <sdsl/hyb_sd_vector.hpp>
 #include <sdsl/rl_enc_vector.hpp>
 #include <sdsl/rl_inc_vector.hpp>
+#include <sdsl/rl_vector.hpp>
+#include <sdsl/rl_bitenc_vector.hpp>
 #include <sdsl/wt_rlmn.hpp>
 #include <sdsl/wt_huff.hpp>
 #include <sdsl/csa_alphabet_strategy.hpp>
+#include <sdsl/coder.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -31,6 +34,9 @@ using namespace std;
 using namespace sdsl;
 
 using ll = long long;
+
+template<uint32_t t_dens>
+using rl_vec = rl_vector<coder::elias_delta, sd_vector<>, t_dens> ;
 
 using HighResClockTimepoint = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
@@ -249,6 +255,17 @@ int main(int argc, char *argv[])
     {
         string algo = "rlcsa_vector";
         PsiVectorExperiment<rlcsa_psi_vector> experiment(algo, psi);
+    }
+
+    {
+        string algo = "rl_bitenc_vector";
+        PsiVectorExperiment<sdsl_psi_vector<rl_bitenc_vector>> experiment(algo, psi);
+    }
+
+
+    {
+        string algo = "rl_vector_16";
+        PsiVectorExperiment<sdsl_psi_vector<rl_vec<16>>> experiment(algo, psi);
     }
 
     {

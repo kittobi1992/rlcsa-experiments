@@ -108,8 +108,8 @@ time_space_tradeoff_plot_benchmark <- function(vec, title="Access Time-Space-Tra
 #==========Experiment===========#
 setwd("C:/Users/tobia/Documents/home/theuer/rlcsa-experiments/results/")
 experiment_dir="C:/Users/tobia/Documents/home/theuer/rmq-experiments/results/"
-date="2017-05-03"
-experiment_number="1"
+date="2017-04-28"
+experiment_number="2"
 tmp <- cbind(date,"rl_vector_experiment",experiment_number)
 experiment <- str_c(tmp,collapse='_');
 #experiment <- paste(experiment_dir,experiment,sep="")
@@ -127,21 +127,21 @@ rlvec$Vector <- factor(rlvec$Vector, levels = levels(rlvec$Vector)[c(1,4,7,9,3,6
 #Plots summarizing stats for all benchmarks
 plot(vector_space_plot(rlvec) + facet_wrap(~ Benchmark, scales="free"))
 plot(vector_access_time_plot(rlvec) + facet_wrap(~ Benchmark, scales="free"))
-#plot(time_space_tradeoff_plot_benchmark(rlvec,title="Access Time-Space-Tradeoff per benchmark") + 
-#       facet_wrap(~ Benchmark, scales="free"))
+plot(time_space_tradeoff_plot_benchmark(rlvec,title="Access Time-Space-Tradeoff per benchmark") + 
+       facet_wrap(~ Benchmark, scales="free"))
 
 #Plots summarizing stats for all benchmark types
 rlvec_type <-  ddply(rlvec, c("Vector","Type"), aggreg)
 plot(vector_space_plot(rlvec_type) + facet_wrap(~ Type))
 plot(vector_access_time_plot(rlvec_type) + facet_wrap(~ Type))
-#plot(time_space_tradeoff_plot_benchmark(rlvec_type,
-#                                        title="Access Time-Space-Tradeoff per benchmark type",
-#                                        point_size=5) + facet_wrap(~ Type))
+plot(time_space_tradeoff_plot_benchmark(rlvec_type,
+                                        title="Access Time-Space-Tradeoff per benchmark type",
+                                        point_size=5) + facet_wrap(~ Type))
 
 #Plots summarizing stats for all benchmark
 rlvec_all <- ddply(rlvec, c("Vector"), aggreg)
 plot(vector_space_plot(rlvec_all))
 plot(vector_access_time_plot(rlvec_all))
-#plot(time_space_tradeoff_plot_benchmark(rlvec_all,
-#                                        title="Access Time-Space-Tradeoff for all benchmarks", point_size=8))
+plot(time_space_tradeoff_plot_benchmark(rlvec_all,
+                                        title="", point_size=8))
 

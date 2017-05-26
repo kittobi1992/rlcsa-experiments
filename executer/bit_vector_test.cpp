@@ -14,7 +14,7 @@ std::mt19937_64 rng;
 using HighResClockTimepoint = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
 HighResClockTimepoint s, e;
-size_t max_iteration_index = 100000;
+size_t max_iteration_index = 10000;
 size_t one_count = 0;
 
 inline HighResClockTimepoint time()
@@ -58,7 +58,7 @@ class BitVectorExperiment {
         double space_bits_per_element = 8.0 * (static_cast<double>(size_in_bytes(bit_vec)) / static_cast<double>(vec.size()));
 
         std::mt19937_64 rng;
-        std::uniform_int_distribution<uint64_t> distribution(0, vec.size());
+        std::uniform_int_distribution<uint64_t> distribution(0, vec.size()-1);
         auto dice = bind(distribution, rng);
 
         s = time();
@@ -71,13 +71,12 @@ class BitVectorExperiment {
         double random_access_time_per_element = microseconds() / max_iteration_index;
         
         s = time();
-        for (int i = 0; i < max_iteration_index; ++i)
+        for (int i = 0; i < std::min(max_iteration_index, vec.size()); ++i)
         {
             volatile uint64_t val = bit_vec[i];
         }
         e = time();
         double sequential_acces_time_per_element = microseconds() / max_iteration_index;
-
         rank_0 rank0(&bit_vec);
         s = time();
         for (int i = 0; i < max_iteration_index; ++i)
